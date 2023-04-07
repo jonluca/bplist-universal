@@ -1,11 +1,13 @@
 import * as bplist from "../src/bplistParser";
 import assert from "assert";
+import * as fs from "fs/promises";
 import path from "path";
 import { describe, it, expect } from "vitest";
 describe("bplist-universal", () => {
   const parseFileWithLogging = async (file: string) => {
     const startTime = performance.now();
-    const [dict] = await bplist.parseFile(file);
+    const buffer = await fs.readFile(file);
+    const [dict] = bplist.parseBuffer(buffer);
     const endTime = performance.now();
     console.log(`Parsed "${file}" in ${endTime - startTime}ms`);
     return dict;
@@ -21,10 +23,12 @@ describe("bplist-universal", () => {
   it("throws error on invalid buffer", async () => {
     expect(() => bplist.parseBuffer(Buffer.from("invalid"))).to.throw();
   });
+
   it("throws error when parsing greater than allowed objects", async () => {
     try {
       const file = path.join(__dirname, "sample1.bplist");
-      await bplist.parseFile(file, { maxObjectCount: 1 });
+      const buffer = await fs.readFile(file);
+      bplist.parseBuffer(buffer, { maxObjectCount: 1 });
       expect.fail("should have thrown");
     } catch (e) {
       // pass
@@ -34,7 +38,8 @@ describe("bplist-universal", () => {
   it("throws error when parsing greater than allowed size", async () => {
     try {
       const file = path.join(__dirname, "sample1.bplist");
-      await bplist.parseFile(file, { maxObjectSize: 1 });
+      const buffer = await fs.readFile(file);
+      bplist.parseBuffer(buffer, { maxObjectSize: 1 });
       expect.fail("should have thrown");
     } catch (e) {
       // pass

@@ -11,15 +11,6 @@ interface Opts {
 // So we just hardcode the correct value.
 const EPOCH = 978307200000;
 
-export async function parseFile(buf: Buffer | string, opts?: Opts) {
-  if (typeof buf === "string") {
-    const fs = await import("fs");
-    buf = await fs.promises.readFile(buf);
-  }
-  return parseBuffer(buf, opts);
-}
-export default parseFile;
-
 export const parseBuffer = function (buffer: Buffer, opts?: Opts) {
   const { maxObjectSize = defaultMaxObjectSize, maxObjectCount = defaultMaxObjectCount } = opts || {};
   // check header
@@ -303,7 +294,7 @@ export const parseBuffer = function (buffer: Buffer, opts?: Opts) {
 
   return [parseObject(topObject)];
 };
-
+export default parseBuffer;
 function readUInt(buffer: Buffer, start = 0) {
   start = start || 0;
 

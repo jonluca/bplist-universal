@@ -11,11 +11,8 @@ $ npm install bplist-universal
 ## Quick Examples
 
 ```javascript
-import { parseBuffer, parseFile } from "bplist-universal";
-import * as fs from "fs/promises";
-(async () => {
-  const obj = await parseFile("myPlist.bplist");
-  const objFromBuffer = parseBuffer(await fs.readFile("myPlist.bplist"));
-  console.log(JSON.stringify(obj));
-})();
+import { parseBuffer } from "bplist-universal";
+import fs from "fs";
+const objFromBuffer = parseBuffer(fs.readFileSync("myPlist.bplist"));
+console.log(JSON.stringify(obj));
 ```
