@@ -1,35 +1,69 @@
 {
-  "name": "bplist-parser",
-  "version": "0.3.2",
-  "description": "Binary plist parser.",
-  "main": "bplistParser.js",
-  "scripts": {
-    "test": "mocha test"
-  },
+  "name": "bplist-universal",
+  "version": "0.0.0-development",
+  "license": "MIT",
+  "author": "Jonluca DeCaro <bplistparser@jonlu.ca>",
+  "description": "Binary plist parser for node",
+  "types": "dist/bplistParser.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "tsconfig.json"
+  ],
+  "sideEffects": false,
+  "main": "dist/bplistParser.js",
   "keywords": [
     "bplist",
-    "plist",
-    "parser"
+    "typedstream",
+    "plist"
   ],
-  "author": "Joe Ferner <joe.ferner@nearinfinity.com>",
-  "contributors": [
-    "Brett Zamir"
-  ],
-  "license": "MIT",
-  "devDependencies": {
-    "eslint": "6.5.x",
-    "mocha": "6.2.x"
-  },
-  "homepage": "https://github.com/nearinfinity/node-bplist-parser",
-  "bugs": "https://github.com/nearinfinity/node-bplist-parser/issues",
-  "engines": {
-    "node": ">= 5.10.0"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nearinfinity/node-bplist-parser.git"
+    "url": "git+https://github.com/jonluca/bplist-universal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonluca/bplist-universal/issues"
+  },
+  "homepage": "https://github.com/jonluca/bplist-universal",
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "lint": "eslint src",
+    "build": "rm -fr dist/* && tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "prettier": "prettier --write \"**/*.+(js|jsx|ts|tsx|har||json|css|md)\"",
+    "test": "vitest --coverage",
+    "test:update": "vitest -u",
+    "test:watch": "vitest -w"
   },
   "dependencies": {
-    "big-integer": "1.6.x"
+    "big-integer": "^1.6.51"
+  },
+  "devDependencies": {
+    "@types/eslint": "8.4.10",
+    "@types/node": "^18.11.18",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
+    "@vitest/coverage-c8": "^0.27.3",
+    "c8": "^7.12.0",
+    "eslint": "^8.32.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "lint-staged": "^13.1.0",
+    "prettier": "^2.8.3",
+    "typescript": "4.9.4",
+    "vitest": "^0.27.3"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,jsx,tsx}": [
+      "eslint --cache --fix"
+    ],
+    "**/*.{js,ts,jsx,tsx,json,md}": [
+      "prettier --write"
+    ]
   }
 }
