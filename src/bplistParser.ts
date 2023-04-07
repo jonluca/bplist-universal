@@ -1,23 +1,27 @@
 import bigInt from "big-integer";
 
-const maxObjectSize = 100 * 1000 * 1000; // 100Meg
-const maxObjectCount = 32768;
-
+const defaultMaxObjectSize = 100 * 1000 * 1000; // 100Meg
+const defaultMaxObjectCount = 32768;
+interface Opts {
+  maxObjectSize?: number;
+  maxObjectCount?: number;
+}
 // EPOCH = new SimpleDateFormat("yyyy MM dd zzz").parse("2001 01 01 GMT").getTime();
 // ...but that's annoying in a static initializer because it can throw exceptions, ick.
 // So we just hardcode the correct value.
 const EPOCH = 978307200000;
 
-export async function parseFile(buf: Buffer | string) {
+export async function parseFile(buf: Buffer | string, opts?: Opts) {
   if (typeof buf === "string") {
     const fs = await import("fs");
     buf = await fs.promises.readFile(buf);
   }
-  return parseBuffer(buf);
+  return parseBuffer(buf, opts);
 }
 export default parseFile;
 
-export const parseBuffer = function (buffer: Buffer) {
+export const parseBuffer = function (buffer: Buffer, opts?: Opts) {
+  const { maxObjectSize = defaultMaxObjectSize, maxObjectCount = defaultMaxObjectCount } = opts || {};
   // check header
   const header = buffer.subarray(0, "bplist".length).toString("utf8");
   if (header !== "bplist") {
@@ -124,11 +128,7 @@ export const parseBuffer = function (buffer: Buffer) {
         });
       }
       throw new Error(
-        "Too little heap space available! Wanted to read " +
-          length +
-          " bytes, but only " +
-          maxObjectSize +
-          " are available.",
+        `Too little heap space available! Wanted to read ${length} bytes, but only ${maxObjectSize} are available.`,
       );
     }
 
@@ -156,11 +156,7 @@ export const parseBuffer = function (buffer: Buffer) {
         throw new Error("Unhandled real length " + length);
       } else {
         throw new Error(
-          "Too little heap space available! Wanted to read " +
-            length +
-            " bytes, but only " +
-            maxObjectSize +
-            " are available.",
+          `Too little heap space available! Wanted to read ${length} bytes, but only ${maxObjectSize} are available.`,
         );
       }
     }
@@ -195,11 +191,7 @@ export const parseBuffer = function (buffer: Buffer) {
         return buffer.subarray(offset + dataoffset, offset + dataoffset + length);
       }
       throw new Error(
-        "Too little heap space available! Wanted to read " +
-          length +
-          " bytes, but only " +
-          maxObjectSize +
-          " are available.",
+        `Too little heap space available! Wanted to read ${length} bytes, but only ${maxObjectSize} are available.`,
       );
     }
 
@@ -233,11 +225,7 @@ export const parseBuffer = function (buffer: Buffer) {
         return plistString.toString(enc);
       }
       throw new Error(
-        "Too little heap space available! Wanted to read " +
-          length +
-          " bytes, but only " +
-          maxObjectSize +
-          " are available.",
+        `Too little heap space available! Wanted to read ${length} bytes, but only ${maxObjectSize} are available.`,
       );
     }
 

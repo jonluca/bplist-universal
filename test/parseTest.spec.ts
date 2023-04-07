@@ -18,6 +18,38 @@ describe("bplist-universal", () => {
     expect(dict["Library Persistent ID"], "6F81D37F95101437");
   });
 
+  it("throws error on invalid buffer", async () => {
+    expect(() => bplist.parseBuffer(Buffer.from("invalid"))).to.throw();
+  });
+  it("throws error when parsing greater than allowed objects", async () => {
+    try {
+      const file = path.join(__dirname, "sample1.bplist");
+      await bplist.parseFile(file, { maxObjectCount: 1 });
+      expect.fail("should have thrown");
+    } catch (e) {
+      // pass
+    }
+  });
+
+  it("throws error when parsing greater than allowed size", async () => {
+    try {
+      const file = path.join(__dirname, "sample1.bplist");
+      await bplist.parseFile(file, { maxObjectSize: 1 });
+      expect.fail("should have thrown");
+    } catch (e) {
+      // pass
+    }
+  });
+
+  it("throws error on invalid type", async () => {
+    try {
+      bplist.parseBuffer(Buffer.from("bplist\x0f"));
+      expect.fail("should have thrown");
+    } catch (e) {
+      // pass
+    }
+  });
+
   it("sample1", async () => {
     const file = path.join(__dirname, "sample1.bplist");
     const dict = await parseFileWithLogging(file);
